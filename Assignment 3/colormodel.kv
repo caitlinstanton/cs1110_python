@@ -1,0 +1,434 @@
+#:kivy 1.0.9
+# colormodel.kv
+# Kivy GUI Layout Specification for colormodel
+# Walker M. White
+# June 2, 2012
+
+<Separator>:
+    size: (10,0)
+    canvas:
+        Color:
+            rgb: (1,1,1)
+        Rectangle:
+            size: self.size
+            pos:  self.pos
+        Color:
+            rgb: (0,0,0,1)
+        Line:
+            points: (self.pos[0]+self.size[0]/2,self.pos[1],self.pos[0]++self.size[0]/2,self.pos[1]+self.size[1])
+
+<ColorPanel>:
+    canvas:
+        Color: 
+            rgb: self.background
+        Rectangle: 
+            size: self.size
+            pos: self.pos
+    
+    Label:
+        text: root.text
+        color: root.foreground
+        font_size: sp(14)
+        bold: True
+        valign: 'top'
+        text_size: (self.parent.size[0]-sp(10),self.parent.size[1]-sp(10))
+
+<ColorSlider>
+    slider: slider_component
+    size: (sp(50),0)
+    size_hint: (None,1)
+    orientation: 'vertical'
+    padding: 5
+
+    canvas:
+        Color: 
+            rgb: self.color
+        Rectangle: 
+            size: self.size
+            pos:  self.pos
+        Color:
+            rgb: [1-self.color[0],1-self.color[1],1-self.color[2],1-self.color[3]]
+        Rectangle:
+            size: [4,self.size[1]-sp(50)]
+            pos: [(self.pos[0]+self.size[0]/2)-2, self.pos[1]+sp(10)]
+
+    Label:
+        text: root.text
+        bold: True
+        font_size: sp(14)
+        color: (0,0,0,1)
+        size:  (1,sp(30))
+        size_hint: (1,None)
+        halign: 'center'
+    Slider:
+        id: slider_component
+        padding: sp(15)
+        orientation: 'vertical'
+        min: root.min_value
+        max: root.max_value
+        value: root.value
+        center_x: 0
+
+
+<TopPanel>:
+    orientation: 'horizontal'
+    main: main_panel
+    comp: comp_panel
+    rSlider: red
+    gSlider: green
+    bSlider: blue
+    cSlider: cyan
+    mSlider: magenta
+    ySlider: yellow
+    kSlider: black
+    hSlider: hue
+    sSlider: saturation
+    vSlider: value
+
+    ColorPanel:
+        id: main_panel
+        color: [1,0,0,1]
+        size_hint: (0.5,1)
+
+    ColorPanel:
+        id:comp_panel
+        color: [0,1,0,1]
+        size_hint: (0.5,1)
+
+    ColorSlider:
+        id: red
+        text: "R"
+        color: [1,1,1,1]
+        max_value: 25500
+        min_value: 0
+        value: 0
+        size_hint: (None,1)
+		on_value: root.parent.on_rgb_slide(self.value,root.gSlider.value,root.bSlider.value)
+
+    ColorSlider:
+        id: green
+        text: "G"
+        color: [1,1,1,1]
+        max_value: 25500
+        min_value: 0
+        initial: 25500
+        size_hint: (None,1)
+        on_value: root.parent.on_rgb_slide(root.rSlider.value,self.value,root.bSlider.value)
+
+
+    ColorSlider:
+        id: blue
+        text: "B"
+        max_value: 25500
+        min_value: 0
+        initial: 0
+        color: [1,1,1,1]
+        size_hint: (None,1)
+        on_value: root.parent.on_rgb_slide(root.rSlider.value,root.gSlider.value,self.value)
+
+    Separator:
+        size_hint: (None, 1)
+
+    ColorSlider:
+        id: cyan
+        text: "C"
+        color: [1,1,1,1]
+        max_value: 10000
+        min_value: 0
+        initial: 10000
+        size_hint: (None,1)
+        on_value: root.parent.on_cmyk_slide(self.value,root.mSlider.value,root.ySlider.value,root.kSlider.value)
+
+    ColorSlider:
+        id: magenta
+        text: "M"
+        color: [1,1,1,1]
+        max_value: 10000
+        min_value: 0
+        initial: 0
+        size_hint: (None,1)
+        on_value: root.parent.on_cmyk_slide(root.cSlider.value,self.value,root.ySlider.value,root.kSlider.value)
+
+    ColorSlider:
+        id: yellow
+        text: "Y"
+        color: [1,1,1,1]
+        max_value: 10000
+        min_value: 0
+        initial: 10000
+        size_hint: (None,1)
+        on_value: root.parent.on_cmyk_slide(root.cSlider.value,root.mSlider.value,self.value,root.kSlider.value)
+
+    ColorSlider:
+        id: black
+        text: "K"
+        color: [1,1,1,1]
+        max_value: 10000
+        min_value: 0
+        initial: 0
+        size_hint: (None,1)
+        on_value: root.parent.on_cmyk_slide(root.cSlider.value,root.mSlider.value,root.ySlider.value,self.value)
+
+    Separator:
+        size_hint: (None, 1)
+
+    ColorSlider:
+        id: hue
+        text: "H"
+        color: [1,1,1,1]
+        max_value: 35999
+        min_value: 0
+        initial: 12000
+        size_hint: (None,1)
+        on_value: root.parent.on_hsv_slide(self.value,root.sSlider.value,root.vSlider.value)
+
+    ColorSlider:
+        id: saturation
+        text: "S"
+        color: [1,1,1,1]
+        max_value: 100
+        min_value: 0
+        initial: 100
+        size_hint: (None,1)
+        on_value: root.parent.on_hsv_slide(root.hSlider.value,self.value,root.vSlider.value)
+
+    ColorSlider:
+        id: value
+        text: "V"
+        color: [1,1,1,1]
+        max_value: 100
+        min_value: 0
+        initial: 100
+        size_hint: (None,1)
+        on_value: root.parent.on_hsv_slide(root.hSlider.value,root.sSlider.value,self.value)
+
+<BotPanel>:
+    rgbButton: rgb
+    cmykButton: cmyk
+    hsvButton: hsv
+    rField: red
+    gField: green
+    bField: blue
+    cField: cyan
+    mField: magenta
+    yField: yellow
+    kField: black
+    hField: hue
+    sField: sat
+    vField: val
+    orientation: 'horizontal'
+    padding: 10
+
+    canvas:
+        Color: 
+            rgb: (1,1,1)
+        Rectangle: 
+            size: self.size
+            pos: self.pos
+
+    Label:
+        text: "R"
+        color: (0,0,0,1)
+        font_size: sp(16)
+        bold: True
+        size: (sp(25),0)
+        size_hint: (None, 1)
+
+    TextInput:
+        id: red
+        size_hint: (0.07,1)
+        multiline: False
+        font_size: sp(16)
+        padding_y: ( self.height - self.line_height ) / 2
+        padding_x: sp(8)
+
+    Label:
+        text: "G"
+        color: (0,0,0,1)
+        font_size: sp(14)
+        bold: True
+        size: (sp(25),0)
+        size_hint: (None,1)
+
+    TextInput:
+        id: green
+        size_hint: (0.07,1)
+        multiline: False
+        font_size: sp(16)
+        padding_y: ( self.height - self.line_height ) / 2
+        padding_x: sp(8)
+
+    Label:
+        text: "B"
+        color: (0,0,0,1)
+        font_size: sp(14)
+        bold: True
+        size: (sp(25),0)
+        size_hint: (None,1)
+
+    TextInput:
+        id: blue
+        size_hint: (0.07,1)
+        multiline: False
+        font_size: sp(16)
+        padding_y: ( self.height - self.line_height ) / 2
+        padding_x: sp(8)
+
+    Widget:
+        size: (dp(10), 0)
+        size_hint: (None, 1)
+
+    Button:
+        id: rgb
+        text: "RGB"
+        bold: True
+        size_hint: (0.1,1)
+        on_press: root.parent.on_rgb_press(root._toInt(root.rField.text),root._toInt(root.gField.text),root._toInt(root.bField.text))
+
+    Label:
+        text: "C"
+        color: (0,0,0,1)
+        font_size: sp(14)
+        bold: True
+        size: (sp(25),0)
+        size_hint: (None,1)
+
+    TextInput:
+        id: cyan
+        size_hint: (0.07,1)
+        multiline: False
+        font_size: sp(16)
+        padding_y: ( self.height - self.line_height ) / 2
+        padding_x: sp(8)
+
+    Label:
+        text: "M"
+        color: (0,0,0,1)
+        font_size: sp(14)
+        bold: True
+        size: (sp(25),0)
+        size_hint: (None,1)
+
+    TextInput:
+        id: magenta
+        size_hint: (0.07,1)
+        multiline: False
+        font_size: sp(16)
+        padding_y: ( self.height - self.line_height ) / 2
+        padding_x: sp(8)
+
+    Label:
+        text: "Y"
+        color: (0,0,0,1)
+        font_size: sp(14)
+        bold: True
+        size: (sp(25),0)
+        size_hint: (None,1)
+
+    TextInput:
+        id: yellow
+        size_hint: (0.07,1)
+        multiline: False
+        font_size: sp(16)
+        padding_y: ( self.height - self.line_height ) / 2
+        padding_x: sp(8)
+
+    Label:
+        text: "K"
+        color: (0,0,0,1)
+        font_size: sp(14)
+        bold: True
+        size: (sp(25),0)
+        size_hint: (None,1)
+
+    TextInput:
+        id: black
+        size_hint: (0.07,1)
+        multiline: False
+        font_size: sp(16)
+        padding_y: ( self.height - self.line_height ) / 2
+        padding_x: sp(8)
+
+    Widget:
+        size: (dp(10), 0)
+        size_hint: (None, 1)
+
+    Button:
+        id: cmyk
+        text: "CMYK"
+        bold: True
+        size_hint: (0.1,1)
+        on_press: root.parent.on_cmyk_press(root._toFloat100(root.cField.text),root._toFloat100(root.mField.text),root._toFloat100(root.yField.text),root._toFloat100(root.kField.text))
+
+    Label:
+        text: "H"
+        color: (0,0,0,1)
+        font_size: sp(14)
+        bold: True
+        size: (sp(25),0)
+        size_hint: (None,1)
+
+    TextInput:
+        id: hue
+        size_hint: (0.07,1)
+        multiline: False
+        font_size: sp(16)
+        padding_y: ( self.height - self.line_height ) / 2
+        padding_x: sp(8)
+	
+    Label:
+        text: "S"
+        color: (0,0,0,1)
+        font_size: sp(14)
+        bold: True
+        size: (sp(25),0)
+        size_hint: (None,1)
+
+    TextInput:
+        id: sat
+        size_hint: (0.07,1)
+        multiline: False
+        font_size: sp(16)
+        padding_y: ( self.height - self.line_height ) / 2
+        padding_x: sp(8)
+    
+    Label:
+        text: "V"
+        color: (0,0,0,1)
+        font_size: sp(14)
+        bold: True
+        size: (sp(25),0)
+        size_hint: (None,1)
+
+    TextInput:
+        id: val
+        size_hint: (0.07,1)
+        multiline: False
+        font_size: sp(16)
+        padding_y: ( self.height - self.line_height ) / 2
+        padding_x: sp(8)
+    
+    Widget:
+        size: (dp(10), 0)
+        size_hint: (None, 1)
+
+    Button:
+        id: hsv
+        text: "HSV"
+        bold: True
+        size_hint: (0.1,1)
+        on_press: root.parent.on_hsv_press(root._toFloat360(root.hField.text),root._toFloat(root.sField.text),root._toFloat(root.vField.text))
+
+
+<ColorWidget>:
+    orientation: 'vertical'
+    top: top_panel
+    bot: bot_panel
+
+    TopPanel:
+        id: top_panel
+        size_hint: (1,0.8)
+
+    BotPanel
+        id: bot_panel
+        size_hint: (1,0.2)

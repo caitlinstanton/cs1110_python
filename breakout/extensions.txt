@@ -1,0 +1,45 @@
+# extensions.txt
+# Caitlin Stanton (cs968), Andrew Denkewicz (ajd248)
+# 12/06/2016
+
+We added the following extensions:
+- Keeping track of the player's score
+- Allowing for the player to start the game over with different settings after they've won or lost the game
+- Varying degrees of difficulty
+- Specialized "powerups" in the bricks
+
+To keep track of the player's score, we made added an attribute to play.py to keep track of the points earned during the game.
+Then we made a function, called add_points(), that would increase the _points attribute by 5. This was called in the handle_collisions()
+function, also in play.py. Every time a brick is hit, it calls add_points() to increase the _points attribute.
+This value is accessed by a geter written in play.py and then displayed in a GLabel in breakout.py.
+
+Once the player has reached a state of STATE_GAMEOVER or STATE_WON, the game is then into a state of STATE_INACTIVE.
+The _state_inactive() helper function in breakout.py checks the key pressed, and each corresponding key (0,1,2,3) 
+is given a specialized action. If any of these keys are hit, the _state_inactive() function starts the game by setting
+the _state to STATE_ACTIVE.
+
+While the game is in STATE_INACTIVE, it checks to see that certain keys are pressed. In order to implement levels, 
+we added an attribute to breakout.py called _level, which stored an int from 1-3 to determine the level. With 1 being
+the easiest level and 3 being the hardest level, each level is distinguished by the velocity of the ball, which increases
+as the levels get harder. Pressing the 0 key with choose a random level for the user. In order to change the velocity of the ball
+from within breakout.py, the serveBall() function from play.py was modified to include a parameter for x-velocity, which 
+changes the _vx attribute of the Ball object when it's created. The x-velocity value is 3.0 times the value in _level (again,
+an int from 1 to 3).
+
+We added an attribute to the Brick class called _powerups that stores an int that corresponds to the specific powerup the
+Brick object has. _powerups is a random int from 1 to 5 that is given to a Brick when a random number generated in the 
+Brick constructor is greater than 9 (since the random number ranges from 0 to 10). This allows for a reasonable number of Bricks
+to have powerups without cluttering and overwhelming the board. If that random number is greater than 9, then the Brick's _powerups 
+attribute is assigned a random number from 1 to 5 and colored black; otherwise, it is set to 0. The functions of the powerups are as follows:
+- 1 --> Paddle length is doubled
+- 2 --> Paddle length is cut in half
+- 3 --> Ball x-velocity is doubled
+- 4 --> Ball x-velocity is cut in half
+- 5 --> Topmost row of Bricks is removed
+Each powerup has a corresponding function to perform the appropriate action. For powerups 1 and 2, there is a function in models.py 
+in the Paddle class called changeLength() that adjusts the width of the Paddle by a given multiplier. For powerups 3 and 4 we did something similar, 
+adding a function in the Ball class called changeVelocity() that adjusts the x velocity of the Ball by a given multiplier. For powerup 5, we wrote a 
+special function in play.py called remove_row() that removes the first row of bricks in the attribute _bricks (a list of Brick objects). 
+In handle_collision(), as the Ball hits a Brick, it uses a function called checkPowerups() in play.py to look at the _powerups attribute of the Brick 
+and then call the corresponding function. It then calls the setter function for the attribute _latest_powerups in play.py to set it to a string
+that will be displayed to show that the powerup was used (i.e. "Paddle length multiplied by 2").
